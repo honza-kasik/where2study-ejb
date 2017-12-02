@@ -3,11 +3,25 @@ package cz.honzakasik.upol.where2study.schedule;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+
 /**
  * Abstraction over schedule for room.
  */
+@Entity
 public class Schedule {
 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private int id;
+	
+	@OneToMany
+	@JoinColumn(name="event_id")
 	private final List<Event> events;
 	
 	public Schedule(List<Event> events) {
@@ -56,6 +70,31 @@ public class Schedule {
 	 */
 	public List<Event> getEvents() {
 		return events;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((events == null) ? 0 : events.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Schedule other = (Schedule) obj;
+		if (events == null) {
+			if (other.events != null)
+				return false;
+		} else if (!events.equals(other.events))
+			return false;
+		return true;
 	}
 	
 }

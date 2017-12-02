@@ -1,22 +1,46 @@
 package cz.honzakasik.upol.where2study.room;
 
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+
 import cz.honzakasik.upol.where2study.schedule.Schedule;
 
 /**
  * Abstraction over room
  */
+@Entity
 public class Room {
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private int id;
 
-	private final String roomNumber;
-	private final String doorNumber;
-	private final String floor;
-	private final RoomType type;
-	private final Building building;
-	private final Department department;
-	private final Schedule schedule;
-	private final boolean isInCommonFund;
-	private final int capacity;
-	private final String note;
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="building_id")
+	private Building building;
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="department_id")
+	private Department department;
+	
+	@OneToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="schedule_id")
+	private Schedule schedule;
+	
+	private String roomNumber;
+	private String doorNumber;
+	private String floor;
+	
+	private int type;
+	private boolean isInCommonFund;
+	private int capacity;
+	private String note;
 
 	private Room(Builder builder) {
 		this.roomNumber = builder.roomNumber;
@@ -29,6 +53,9 @@ public class Room {
 		this.capacity = builder.capacity;
 		this.note = builder.note;
 		this.schedule = builder.schedule;
+	}
+
+	public Room() {
 	}
 
 	/**
@@ -59,7 +86,7 @@ public class Room {
 	 * Get type of the room, see {@link RoomType}
 	 * @return type of a room
 	 */
-	public RoomType getType() {
+	public int getType() {
 		return type;
 	}
 
@@ -111,6 +138,79 @@ public class Room {
 		return schedule;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((building == null) ? 0 : building.hashCode());
+		result = prime * result + capacity;
+		result = prime * result + ((department == null) ? 0 : department.hashCode());
+		result = prime * result + ((doorNumber == null) ? 0 : doorNumber.hashCode());
+		result = prime * result + ((floor == null) ? 0 : floor.hashCode());
+		result = prime * result + id;
+		result = prime * result + (isInCommonFund ? 1231 : 1237);
+		result = prime * result + ((note == null) ? 0 : note.hashCode());
+		result = prime * result + ((roomNumber == null) ? 0 : roomNumber.hashCode());
+		result = prime * result + ((schedule == null) ? 0 : schedule.hashCode());
+		result = prime * result + type;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Room other = (Room) obj;
+		if (building == null) {
+			if (other.building != null)
+				return false;
+		} else if (!building.equals(other.building))
+			return false;
+		if (capacity != other.capacity)
+			return false;
+		if (department == null) {
+			if (other.department != null)
+				return false;
+		} else if (!department.equals(other.department))
+			return false;
+		if (doorNumber == null) {
+			if (other.doorNumber != null)
+				return false;
+		} else if (!doorNumber.equals(other.doorNumber))
+			return false;
+		if (floor == null) {
+			if (other.floor != null)
+				return false;
+		} else if (!floor.equals(other.floor))
+			return false;
+		if (id != other.id)
+			return false;
+		if (isInCommonFund != other.isInCommonFund)
+			return false;
+		if (note == null) {
+			if (other.note != null)
+				return false;
+		} else if (!note.equals(other.note))
+			return false;
+		if (roomNumber == null) {
+			if (other.roomNumber != null)
+				return false;
+		} else if (!roomNumber.equals(other.roomNumber))
+			return false;
+		if (schedule == null) {
+			if (other.schedule != null)
+				return false;
+		} else if (!schedule.equals(other.schedule))
+			return false;
+		if (type != other.type)
+			return false;
+		return true;
+	}
+
 	/**
 	 * A builder for {@link Room} (as in builder design pattern)
 	 */
@@ -119,7 +219,7 @@ public class Room {
 		private String roomNumber;
 		private String doorNumber;
 		private String floor;
-		private RoomType type;
+		private int type;
 		private Building building;
 		private Department department;
 		private boolean isInCommonFund;
@@ -158,7 +258,7 @@ public class Room {
 		 * Set type of the room, see {@link RoomType}
 		 * @param type type of the room
 		 */
-		public Builder type(RoomType type) {
+		public Builder type(int type) {
 			this.type = type;
 			return this;
 		}
