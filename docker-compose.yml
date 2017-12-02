@@ -3,7 +3,6 @@ version: '3'
 services:
  mysqldb:
   image:    mysql
-  container_name: database_host
   restart:  always
   environment:
    - MYSQL_DATABASE=where2study
@@ -11,6 +10,6 @@ services:
    - MYSQL_USER=user
    - MYSQL_PASSWORD=toor
   ports:
-   - "8989:3306"
+   - "13113:3306"
   volumes:
    - ./data/db/mysql:/var/lib/mysql/:z
