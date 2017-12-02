@@ -2,4 +2,20 @@
 <ejb-jar xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/ejb-jar_3_2.xsd" version="3.2">
   <display-name>Where2Study-ejb </display-name>
   <ejb-client-jar>Where2Study-ejbClient.jar</ejb-client-jar>
+  <!-- https://www.ibm.com/support/knowledgecenter/en/SSAW57_8.5.5/com.ibm.websphere.nd.multiplatform.doc/ae/cdat_datres.html -->
+  <data-source>
+    <name>java:app/myDS</name>
+    <class-name>com.mysql.jdbc.Driver</class-name>
+    <server-name>localhost</server-name>
+    <port-number>8989</port-number>
+    <database-name>where2study</database-name>
+    <user>user</user>
+    <password>toor</password>
+    <transactional>true</transactional>
+    <isolation-level>TRANSACTION_READ_COMMITTED</isolation-level>
+    <initial-pool-size>2</initial-pool-size>	
+    <max-pool-size>10</max-pool-size>
+    <min-pool-size>5</min-pool-size>
+    <max-statements>0</max-statements>
+  </data-source>
 </ejb-jar>

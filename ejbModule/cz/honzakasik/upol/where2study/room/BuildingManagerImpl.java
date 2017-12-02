@@ -32,7 +32,6 @@ public class BuildingManagerImpl implements BuildingManager {
 	@Override
 	public void removeBuilding(Building room) {
 		em.remove(room);
-
 	}
 
 	@Override
