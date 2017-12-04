@@ -57,6 +57,11 @@ public class Room {
 
 	public Room() {
 	}
+	
+
+	public int getId() {
+		return id;
+	}
 
 	/**
 	 * Get identification number of room (as identified in STAG)
@@ -209,6 +214,13 @@ public class Room {
 		if (type != other.type)
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Room [id=" + id + ", building=" + building + ", department=" + department + ", schedule=" + schedule
+				+ ", roomNumber=" + roomNumber + ", doorNumber=" + doorNumber + ", floor=" + floor + ", type=" + type
+				+ ", isInCommonFund=" + isInCommonFund + ", capacity=" + capacity + ", note=" + note + "]";
 	}
 
 	/**

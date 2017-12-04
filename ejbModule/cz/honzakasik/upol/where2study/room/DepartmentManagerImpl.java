@@ -11,7 +11,7 @@ import cz.honzakasik.upol.where2study.Constants;
 @Stateless
 public class DepartmentManagerImpl implements DepartmentManager {
 	
-	@PersistenceContext(unitName=Constants.DEFAULT_PERSISTENCE_UNIT_NAME);
+	@PersistenceContext(unitName=Constants.DEFAULT_PERSISTENCE_UNIT_NAME)
 	private EntityManager em;
 
 	@Override

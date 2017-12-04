@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
@@ -15,11 +16,16 @@ import cz.honzakasik.upol.where2study.room.Room;
 @Entity
 public class User {
 	
+	@Id
+	private int id;
+	
 	private String email;
 	private String firstname;
 	private String lastname;
 	
 	private String passwordHash;
+	
+	private UserRole userRole;
 	
 	@ManyToMany(cascade = CascadeType.ALL)  
     @JoinTable(name = "building_user",
@@ -72,6 +78,14 @@ public class User {
 
 	public void setPasswordHash(String passwordHash) {
 		this.passwordHash = passwordHash;
+	}
+
+	public UserRole getUserRole() {
+		return userRole;
+	}
+
+	public void setUserRole(UserRole userRole) {
+		this.userRole = userRole;
 	}
 
 }

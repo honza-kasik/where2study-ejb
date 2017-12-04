@@ -1,6 +1,7 @@
 package cz.honzakasik.upol.where2study.schedule;
 
-import java.util.Date;
+import java.time.LocalTime;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -21,9 +22,12 @@ public class Schedule {
 	private int id;
 	
 	@OneToMany
-	@JoinColumn(name="event_id")
-	private final List<Event> events;
+	@JoinColumn(name="room_id")
+	private List<Event> events;
 	
+	public Schedule() {
+	}
+
 	public Schedule(List<Event> events) {
 		this.events = events;
 	}
@@ -33,7 +37,8 @@ public class Schedule {
 	 * @return true if there is event running right now, false otherwise
 	 */
 	public boolean isThereAnyEvenRunningtNow() {
-		return isThereAnyEventRunningAtTime(new Date());
+		int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+		return isThereAnyEventRunningAtTime(LocalTime.now(), dayOfWeek);
 	}
 	
 	/**
@@ -41,9 +46,9 @@ public class Schedule {
 	 * @param date time in which we are finding running event
 	 * @return true if there is running event at specified time, false otherwise
 	 */
-	public boolean isThereAnyEventRunningAtTime(Date date) {
+	public boolean isThereAnyEventRunningAtTime(LocalTime time, int dayOfWeek) {
 		for (Event event : events) {
-			if (date.after(event.getStartTime()) && date.before(event.getEndTime())) {
+			if (event.isRunningAtTime(time, dayOfWeek)) {
 				return true;
 			}
 		}
@@ -52,13 +57,13 @@ public class Schedule {
 	
 	/**
 	 * Get next event starting after specified time
-	 * @param date time after which the event should start
+	 * @param time time after which the event should start
 	 * @return event starting closest to specified time, null if there are no such event
 	 * 		   (presumably at the end of a day...)
 	 */
-	public Event getNextEventStartingAfterTime(Date date) {
+	public Event getNextEventStartingAfterTime(LocalTime time) {
 		return events.stream()
-				.filter((Event e) -> e.getStartTime().after(date))
+				.filter((Event e) -> e.getStartTime().isAfter(time))
 				.sorted((Event e1, Event e2) -> e1.getStartTime().compareTo(e2.getStartTime()))
 				.findFirst()
 				.orElseGet(null);

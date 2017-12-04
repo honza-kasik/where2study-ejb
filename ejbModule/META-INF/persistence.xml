@@ -6,10 +6,12 @@
 		transaction-type="JTA">
 		<!-- <provider>org.hibernate.ejb.HibernatePersistence</provider> -->
 		<jta-data-source>java:/MySqlDS</jta-data-source>
-		<class>cz.honzakasik.upol.where2study.Room</class>
-		<class>cz.honzakasik.upol.where2study.Building</class>
-		<class>cz.honzakasik.upol.where2study.Department</class>
-		<class>cz.honzakasik.upol.where2study.User</class>
+		<class>cz.honzakasik.upol.where2study.room.Room</class>
+		<class>cz.honzakasik.upol.where2study.room.Building</class>
+		<class>cz.honzakasik.upol.where2study.room.Department</class>
+		<class>cz.honzakasik.upol.where2study.schedule.Schedule</class>
+		<class>cz.honzakasik.upol.where2study.schedule.Event</class>
+		<class>cz.honzakasik.upol.where2study.users.User</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 
 		<properties>

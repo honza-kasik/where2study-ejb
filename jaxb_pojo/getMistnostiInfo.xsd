@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://stag-ws.zcu.cz/" xmlns:ns1="http://stag-ws.zcu.cz/">
+  <xs:element name="getMistnostiInfoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="mistnostiInfo" form="unqualified">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="mistnostInfo" form="unqualified">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="zkrBudovy" form="unqualified" type="xs:NMTOKEN"/>
+                    <xs:element name="cisloMistnosti" form="unqualified" type="xs:string"/>
+                    <xs:element name="katedra" form="unqualified" type="xs:NCName"/>
+                    <xs:element name="pracoviste" form="unqualified" type="xs:string"/>
+                    <xs:element name="typCiselne" form="unqualified" type="xs:integer"/>
+                    <xs:element name="typ" form="unqualified" type="xs:NCName"/>
+                    <xs:element name="kapacita" form="unqualified" type="xs:integer"/>
+                    <xs:element name="spolecnyFond" form="unqualified" type="xs:NCName"/>
+                    <xs:element name="provozOd" form="unqualified" type="xs:NMTOKEN"/>
+                    <xs:element minOccurs="0" name="provozDo" form="unqualified" type="xs:NMTOKEN"/>
+                    <xs:element minOccurs="0" name="poznamka" form="unqualified" type="xs:string"/>
+                    <xs:element minOccurs="0" name="plocha" form="unqualified" type="xs:decimal"/>
+                    <xs:element minOccurs="0" name="dvereCislo" form="unqualified" type="xs:string"/>
+                    <xs:element name="podlazi" form="unqualified" type="xs:NMTOKEN"/>
+                    <xs:element name="obec" form="unqualified" type="xs:NCName"/>
+                    <xs:element name="ulice" form="unqualified" type="xs:string"/>
+                    <xs:element minOccurs="0" name="cisloPopisne" form="unqualified" type="xs:NMTOKEN"/>
+                    <xs:element name="adresaBudovy" form="unqualified" type="xs:string"/>
+                    <xs:element minOccurs="0" name="urlMistnost" form="unqualified" type="xs:anyURI"/>
+                    <xs:element minOccurs="0" name="urlBudova" form="unqualified" type="xs:anyURI"/>
+                    <xs:element minOccurs="0" name="identifikatorMistnost" form="unqualified" type="xs:NCName"/>
+                    <xs:element minOccurs="0" name="identifikatorBudova" form="unqualified" type="xs:NMTOKEN"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

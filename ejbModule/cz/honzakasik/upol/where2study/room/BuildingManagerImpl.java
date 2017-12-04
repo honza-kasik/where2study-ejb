@@ -11,7 +11,7 @@ import cz.honzakasik.upol.where2study.Constants;
 @Stateless
 public class BuildingManagerImpl implements BuildingManager {
 	
-	@PersistenceContext(unitName=Constants.DEFAULT_PERSISTENCE_UNIT_NAME);
+	@PersistenceContext(unitName=Constants.DEFAULT_PERSISTENCE_UNIT_NAME)
 	private EntityManager em;
 
 	@Override
@@ -35,7 +35,7 @@ public class BuildingManagerImpl implements BuildingManager {
 	}
 
 	@Override
-	public void addBuilding(Building room) {
+	public void createBuilding(Building room) {
 		em.persist(room);
 	}
 

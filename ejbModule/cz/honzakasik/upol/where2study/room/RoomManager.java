@@ -1,9 +1,11 @@
 package cz.honzakasik.upol.where2study.room;
 
-import java.util.Date;
+import java.time.LocalTime;
 import java.util.List;
 
 import javax.ejb.Local;
+
+import cz.honzakasik.upol.where2study.users.User;
 
 @Local
 public interface RoomManager {
@@ -14,7 +16,11 @@ public interface RoomManager {
 	
 	List<Room> getAllFreeRoomsNow();
 	
-	List<Room> getAllFreeRoomsAtTime(Date time);
+	List<Room> getAllFreeRoomsAtTime(LocalTime time, int dayofWeek);
+	
+	List<Room> getAllFreeRoomsAtTimeBasedOnUserPrefs(User user, LocalTime time, int dayofWeek);
+	
+	List<Room> getAllFreeRoomsNowBasedOnUserPrefs(User user);
 	
 	void createRoom(Room room);
 	

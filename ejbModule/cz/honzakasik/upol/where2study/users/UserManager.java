@@ -13,4 +13,5 @@ public interface UserManager {
 			
 	List<User> getAllUsers();
 
+	void saveUser(User user);
 }

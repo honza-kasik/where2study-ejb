@@ -8,13 +8,13 @@ import javax.ejb.Local;
 public interface BuildingManager {
 	
 	Building getBuildingById(String buildingId);
-	
+		
 	List<Building> getAllBuildings();
 	
 	void removeAllBuildings();
 	
-	void removeBuilding(Building room);
+	void removeBuilding(Building building);
 	
-	void addBuilding(Building room);
+	void createBuilding(Building building);
 
 }

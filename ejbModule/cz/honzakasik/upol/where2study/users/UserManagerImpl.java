@@ -12,7 +12,7 @@ import cz.honzakasik.upol.where2study.Constants;
 @Stateless
 public class UserManagerImpl implements UserManager {
 
-    @PersistenceContext(unitName=Constants.DEFAULT_PERSISTENCE_UNIT_NAME);
+    @PersistenceContext(unitName=Constants.DEFAULT_PERSISTENCE_UNIT_NAME)
 	private EntityManager em;
 
 	@Override
@@ -39,6 +39,11 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public List<User> getAllUsers() {
 		return em.createQuery("select u from User u", User.class).getResultList();
+	}
+
+	@Override
+	public void saveUser(User user) {
+		em.merge(user);
 	}
 
 }

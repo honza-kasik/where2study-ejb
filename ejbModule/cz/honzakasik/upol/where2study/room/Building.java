@@ -1,5 +1,6 @@
 package cz.honzakasik.upol.where2study.room;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -17,9 +18,16 @@ public class Building {
 	private String number;
 	
 	@OneToMany(mappedBy="building")
-	private List<Room> rooms;
+	private List<Room> rooms = new LinkedList<>();
 	
 	public Building() {
+	}
+
+	public Building(String abbreviation, String street, String city, String number) {
+		this.abbreviation = abbreviation;
+		this.street = street;
+		this.city = city;
+		this.number = number;
 	}
 
 	public String getAbbreviation() {
@@ -60,6 +68,10 @@ public class Building {
 
 	public void setRooms(List<Room> rooms) {
 		this.rooms = rooms;
+	}
+	
+	public void addRoom(Room room) {
+		this.rooms.add(room);
 	}
 	
 }

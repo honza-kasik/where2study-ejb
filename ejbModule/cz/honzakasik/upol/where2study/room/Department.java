@@ -7,9 +7,12 @@ import javax.persistence.Id;
 public class Department {
 	
 	@Id
-	private final String abbreviation;
-	private final String fullName;
+	private String abbreviation;
+	private String fullName;
 	
+	public Department() {
+	}
+
 	public Department(String abbreviation, String fullName) {
 		this.abbreviation = abbreviation;
 		this.fullName = fullName;

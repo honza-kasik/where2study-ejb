@@ -1,6 +1,7 @@
 package cz.honzakasik.upol.where2study.room;
 
-import java.util.Date;
+import java.time.LocalTime;
+import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,14 +9,15 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import com.sun.org.apache.regexp.internal.recompile;
+import org.jboss.resteasy.spi.NotImplementedYetException;
 
 import cz.honzakasik.upol.where2study.Constants;
+import cz.honzakasik.upol.where2study.users.User;
 
 @Stateless
 public class RoomManagerImpl implements RoomManager {
 	
-	@PersistenceContext(unitName=Constants.DEFAULT_PERSISTENCE_UNIT_NAME);
+	@PersistenceContext(unitName=Constants.DEFAULT_PERSISTENCE_UNIT_NAME)
 	private EntityManager em;
 
 	@Override
@@ -30,13 +32,13 @@ public class RoomManagerImpl implements RoomManager {
 
 	@Override
 	public List<Room> getAllFreeRoomsNow() {
-		return getAllFreeRoomsAtTime(new Date());
+		return getAllFreeRoomsAtTime(LocalTime.now(), Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
 	}
 
 	@Override
-	public List<Room> getAllFreeRoomsAtTime(Date time) {
-		getAllRooms().stream()
-			.filter(r -> !r.getSchedule().isThereAnyEventRunningAtTime(time))
+	public List<Room> getAllFreeRoomsAtTime(LocalTime time, int dayOfWeek) {
+		return getAllRooms().stream()
+			.filter(r -> !r.getSchedule().isThereAnyEventRunningAtTime(time, dayOfWeek))
 			.collect(Collectors.toList());
 	}
 
@@ -54,6 +56,16 @@ public class RoomManagerImpl implements RoomManager {
 	@Override
 	public void removeAllRooms() {
 		em.createQuery("delete from Room r").executeUpdate();
+	}
+
+	@Override
+	public List<Room> getAllFreeRoomsAtTimeBasedOnUserPrefs(User user, LocalTime time, int dayofWeek) {
+		throw new NotImplementedYetException();
+	}
+
+	@Override
+	public List<Room> getAllFreeRoomsNowBasedOnUserPrefs(User user) {
+		throw new NotImplementedYetException();
 	}
 
 }

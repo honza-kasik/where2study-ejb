@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" xmlns:ns1="http://stag-ws.zcu.cz/">
+  <xs:import namespace="http://stag-ws.zcu.cz/" schemaLocation="ns1.xsd"/>
+  <xs:element name="rozvrh">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="rozvrhovaAkce"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="rozvrhovaAkce">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="roakIdno"/>
+        <xs:element ref="nazev"/>
+        <xs:element minOccurs="0" ref="katedra"/>
+        <xs:element ref="predmet"/>
+        <xs:sequence minOccurs="0">
+          <xs:element ref="ucitIdno"/>
+          <xs:element ref="ucitel"/>
+        </xs:sequence>
+        <xs:element ref="rok"/>
+        <xs:element ref="budova"/>
+        <xs:element ref="mistnost"/>
+        <xs:element ref="kapacitaMistnosti"/>
+        <xs:element minOccurs="0" ref="planObsazeni"/>
+        <xs:element minOccurs="0" ref="obsazeni"/>
+        <xs:element ref="typAkce"/>
+        <xs:element ref="typAkceZkr"/>
+        <xs:element minOccurs="0" ref="semestr"/>
+        <xs:element ref="platnost"/>
+        <xs:element ref="den"/>
+        <xs:element ref="denZkr"/>
+        <xs:sequence minOccurs="0">
+          <xs:element ref="hodinaOd"/>
+          <xs:element ref="hodinaDo"/>
+        </xs:sequence>
+        <xs:element ref="hodinaSkutOd"/>
+        <xs:element ref="hodinaSkutDo"/>
+        <xs:sequence minOccurs="0">
+          <xs:element ref="tydenOd"/>
+          <xs:element ref="tydenDo"/>
+        </xs:sequence>
+        <xs:element ref="tyden"/>
+        <xs:element ref="tydenZkr"/>
+        <xs:element minOccurs="0" ref="casovaRada"/>
+        <xs:element minOccurs="0" ref="kontakt"/>
+        <xs:element minOccurs="0" ref="datum"/>
+        <xs:element ref="datumOd"/>
+        <xs:element ref="datumDo"/>
+        <xs:element ref="druhAkce"/>
+        <xs:element ref="vsichniUciteleUcitIdno"/>
+        <xs:element ref="vsichniUciteleJmenaTituly"/>
+        <xs:element ref="vsichniUcitelePrijmeni"/>
+        <xs:element ref="referencedIdno"/>
+        <xs:element ref="owner"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="roakIdno" type="xs:integer"/>
+  <xs:element name="nazev" type="xs:string"/>
+  <xs:element name="katedra" type="xs:NCName"/>
+  <xs:element name="predmet" type="xs:string"/>
+  <xs:element name="ucitel">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ucitIdno"/>
+        <xs:element ref="jmeno"/>
+        <xs:element ref="prijmeni"/>
+        <xs:element ref="titulPred"/>
+        <xs:element ref="titulZa"/>
+        <xs:element ref="platnost"/>
+        <xs:element ref="zamestnanec"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="jmeno" type="xs:NCName"/>
+  <xs:element name="prijmeni" type="xs:NCName"/>
+  <xs:element name="titulPred" type="xs:string"/>
+  <xs:element name="titulZa" type="xs:NCName"/>
+  <xs:element name="zamestnanec" type="xs:NCName"/>
+  <xs:element name="rok" type="xs:integer"/>
+  <xs:element name="budova" type="xs:NCName"/>
+  <xs:element name="mistnost" type="xs:integer"/>
+  <xs:element name="kapacitaMistnosti" type="xs:integer"/>
+  <xs:element name="planObsazeni" type="xs:integer"/>
+  <xs:element name="obsazeni" type="xs:integer"/>
+  <xs:element name="typAkce" type="xs:string"/>
+  <xs:element name="typAkceZkr" type="xs:string"/>
+  <xs:element name="semestr" type="xs:NCName"/>
+  <xs:element name="den" type="xs:NCName"/>
+  <xs:element name="denZkr" type="xs:NCName"/>
+  <xs:element name="hodinaOd" type="xs:integer"/>
+  <xs:element name="hodinaDo" type="xs:integer"/>
+  <xs:element name="hodinaSkutOd" type="xs:NMTOKEN"/>
+  <xs:element name="hodinaSkutDo" type="xs:NMTOKEN"/>
+  <xs:element name="tydenOd" type="xs:integer"/>
+  <xs:element name="tydenDo" type="xs:integer"/>
+  <xs:element name="tyden" type="xs:NCName"/>
+  <xs:element name="tydenZkr" type="xs:NCName"/>
+  <xs:element name="casovaRada" type="xs:NCName"/>
+  <xs:element name="kontakt" type="xs:string"/>
+  <xs:element name="datum" type="xs:NMTOKEN"/>
+  <xs:element name="datumOd" type="xs:NMTOKEN"/>
+  <xs:element name="datumDo" type="xs:NMTOKEN"/>
+  <xs:element name="druhAkce" type="xs:NCName"/>
+  <xs:element name="vsichniUciteleUcitIdno" type="xs:string"/>
+  <xs:element name="vsichniUciteleJmenaTituly" type="xs:string"/>
+  <xs:element name="vsichniUcitelePrijmeni" type="xs:string"/>
+  <xs:element name="referencedIdno" type="xs:integer"/>
+  <xs:element name="owner" type="xs:NCName"/>
+  <xs:element name="ucitIdno" type="xs:integer"/>
+  <xs:element name="platnost" type="xs:NCName"/>
+</xs:schema>
