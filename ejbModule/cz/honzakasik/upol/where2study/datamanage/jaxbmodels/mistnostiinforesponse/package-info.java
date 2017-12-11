@@ -6,4 +6,4 @@
 //
 
 @javax.xml.bind.annotation.XmlSchema(namespace = "http://stag-ws.zcu.cz/")
-package cz.honzakasik.upol.where2study.restclients.jaxbmodels.mistnostiinforesponse;
+package cz.honzakasik.upol.where2study.datamanage.jaxbmodels.mistnostiinforesponse;

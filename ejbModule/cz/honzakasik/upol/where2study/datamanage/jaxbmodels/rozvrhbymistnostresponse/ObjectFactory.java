@@ -6,7 +6,7 @@
 //
 
 
-package cz.honzakasik.upol.where2study.restclients.jaxbmodels.rozvrhbymistnostresponse;
+package cz.honzakasik.upol.where2study.datamanage.jaxbmodels.rozvrhbymistnostresponse;
 
 import java.math.BigInteger;
 import javax.xml.bind.JAXBElement;

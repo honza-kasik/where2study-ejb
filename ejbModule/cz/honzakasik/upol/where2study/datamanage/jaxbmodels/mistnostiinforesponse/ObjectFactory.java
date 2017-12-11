@@ -6,7 +6,7 @@
 //
 
 
-package cz.honzakasik.upol.where2study.restclients.jaxbmodels.mistnostiinforesponse;
+package cz.honzakasik.upol.where2study.datamanage.jaxbmodels.mistnostiinforesponse;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

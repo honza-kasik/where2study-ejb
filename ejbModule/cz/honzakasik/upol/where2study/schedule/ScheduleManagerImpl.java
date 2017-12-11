@@ -5,6 +5,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import cz.honzakasik.upol.where2study.Constants;
+import cz.honzakasik.upol.where2study.room.Room;
 
 @Stateless
 public class ScheduleManagerImpl implements ScheduleManager {
@@ -14,7 +15,9 @@ public class ScheduleManagerImpl implements ScheduleManager {
 
 	@Override
 	public Schedule getScheduleById(int id) {
-		return em.find(Schedule.class, id);
+		final Schedule schedule = em.find(Schedule.class, id);
+		schedule.getEvents().size();
+		return schedule;
 	}
 
 	@Override
@@ -30,6 +33,15 @@ public class ScheduleManagerImpl implements ScheduleManager {
 	@Override
 	public void removeAllSchedules() {
 		em.createQuery("delete from Schedule s").executeUpdate();
+	}
+
+	@Override
+	public Schedule getScheduleByBuildingAndRoomNumber(String buildingAbbr, String roomNumber) {
+		return em.createQuery("select r from Room r WHERE r.roomNumber = :rn and r.building.abbreviation = :ba", Room.class)
+			.setParameter("rn", roomNumber)
+			.setParameter("ba", buildingAbbr)
+			.getSingleResult()
+			.getSchedule();
 	}
 
 }

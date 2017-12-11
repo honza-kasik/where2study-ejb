@@ -1,29 +1,38 @@
 package cz.honzakasik.upol.where2study.schedule;
 
 import java.time.LocalTime;
-import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import cz.honzakasik.upol.where2study.TimeUtils;
 
 /**
  * Abstraction over schedule for room.
  */
 @Entity
+@XmlRootElement
 public class Schedule {
+	
+	private static final Logger log = LoggerFactory.getLogger(Schedule.class);
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
-	@OneToMany
-	@JoinColumn(name="room_id")
-	private List<Event> events;
+	@OneToMany(mappedBy = "schedule")
+	@XmlElement
+	private List<Event> events = new LinkedList<>();
 	
 	public Schedule() {
 	}
@@ -37,7 +46,7 @@ public class Schedule {
 	 * @return true if there is event running right now, false otherwise
 	 */
 	public boolean isThereAnyEvenRunningtNow() {
-		int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+		int dayOfWeek = TimeUtils.getDayOfWeekToday();
 		return isThereAnyEventRunningAtTime(LocalTime.now(), dayOfWeek);
 	}
 	
@@ -56,17 +65,28 @@ public class Schedule {
 	}
 	
 	/**
-	 * Get next event starting after specified time
+	 * Get next event starting after specified time today
 	 * @param time time after which the event should start
 	 * @return event starting closest to specified time, null if there are no such event
 	 * 		   (presumably at the end of a day...)
 	 */
 	public Event getNextEventStartingAfterTime(LocalTime time) {
+		int dayOfWeek = TimeUtils.getDayOfWeekToday();
 		return events.stream()
-				.filter((Event e) -> e.getStartTime().isAfter(time))
+				.filter((Event e) -> e.getDayOfWeek() == dayOfWeek && e.getStartTime().isAfter(time))
 				.sorted((Event e1, Event e2) -> e1.getStartTime().compareTo(e2.getStartTime()))
 				.findFirst()
-				.orElseGet(null);
+				.orElseGet(() -> null);
+	}
+	
+	/**
+	 * Get next event starting after specified time
+	 * @param time time after which the event should start
+	 * @return event starting closest to specified time, null if there are no such event
+	 * 		   (presumably at the end of a day...)
+	 */
+	public Event getNextEventStartingAfterNow() {
+		return getNextEventStartingAfterTime(LocalTime.now());
 	}
 
 	/**
@@ -100,6 +120,11 @@ public class Schedule {
 		} else if (!events.equals(other.events))
 			return false;
 		return true;
+	}
+
+	public void addEvent(Event event) {
+		this.events.add(event);
+		event.setSchedule(this);		
 	}
 	
 }

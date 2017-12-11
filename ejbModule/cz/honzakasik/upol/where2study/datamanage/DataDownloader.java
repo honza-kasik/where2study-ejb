@@ -1,4 +1,4 @@
-package cz.honzakasik.upol.where2study.restclients;
+package cz.honzakasik.upol.where2study.datamanage;
 
 import java.io.IOException;
 

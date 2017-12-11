@@ -1,13 +1,15 @@
 package cz.honzakasik.upol.where2study.room;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import cz.honzakasik.upol.where2study.schedule.Schedule;
 
@@ -15,22 +17,25 @@ import cz.honzakasik.upol.where2study.schedule.Schedule;
  * Abstraction over room
  */
 @Entity
-public class Room {
+@XmlRootElement
+public class Room implements Serializable {
 	
+	private static final long serialVersionUID = -7646941748653802916L;
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="building_id")
+	@ManyToOne(targetEntity=Building.class)
+	@XmlTransient
 	private Building building;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="department_id")
+	@ManyToOne(targetEntity=Department.class)
+	@XmlTransient
 	private Department department;
 	
-	@OneToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="schedule_id")
+	@OneToOne(targetEntity=Schedule.class)
+	@XmlTransient
 	private Schedule schedule;
 	
 	private String roomNumber;
@@ -55,10 +60,16 @@ public class Room {
 		this.schedule = builder.schedule;
 	}
 
+	/**
+	 * Create empty instance
+	 */
 	public Room() {
 	}
-	
 
+	/**
+	 * Get room id
+	 * @return id of room
+	 */
 	public int getId() {
 		return id;
 	}
@@ -142,6 +153,51 @@ public class Room {
 	public Schedule getSchedule() {
 		return schedule;
 	}
+	
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public void setBuilding(Building building) {
+		this.building = building;
+	}
+
+	public void setDepartment(Department department) {
+		this.department = department;
+	}
+
+	public void setSchedule(Schedule schedule) {
+		this.schedule = schedule;
+	}
+
+	public void setRoomNumber(String roomNumber) {
+		this.roomNumber = roomNumber;
+	}
+
+	public void setDoorNumber(String doorNumber) {
+		this.doorNumber = doorNumber;
+	}
+
+	public void setFloor(String floor) {
+		this.floor = floor;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	public void setInCommonFund(boolean isInCommonFund) {
+		this.isInCommonFund = isInCommonFund;
+	}
+
+	public void setCapacity(int capacity) {
+		this.capacity = capacity;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
 
 	@Override
 	public int hashCode() {
@@ -218,9 +274,7 @@ public class Room {
 
 	@Override
 	public String toString() {
-		return "Room [id=" + id + ", building=" + building + ", department=" + department + ", schedule=" + schedule
-				+ ", roomNumber=" + roomNumber + ", doorNumber=" + doorNumber + ", floor=" + floor + ", type=" + type
-				+ ", isInCommonFund=" + isInCommonFund + ", capacity=" + capacity + ", note=" + note + "]";
+	    return String.format("%s[id=%d]", getClass().getSimpleName(), getId());
 	}
 
 	/**

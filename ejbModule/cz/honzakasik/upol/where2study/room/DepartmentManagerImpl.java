@@ -26,7 +26,7 @@ public class DepartmentManagerImpl implements DepartmentManager {
 
 	@Override
 	public void removeAllDepartments() {
-		em.createQuery("delete from Department d", Department.class).executeUpdate();
+		em.createQuery("delete from Department d").executeUpdate();
 	}
 
 	@Override

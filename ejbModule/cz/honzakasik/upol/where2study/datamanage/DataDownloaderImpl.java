@@ -1,8 +1,7 @@
-package cz.honzakasik.upol.where2study.restclients;
+package cz.honzakasik.upol.where2study.datamanage;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.ejb.Stateful;
@@ -22,10 +21,10 @@ import org.slf4j.LoggerFactory;
 
 import cz.honzakasik.upol.where2study.Constants;
 import cz.honzakasik.upol.where2study.TimeUtils;
-import cz.honzakasik.upol.where2study.restclients.jaxbmodels.mistnostiinforesponse.GetMistnostiInfoResponse;
-import cz.honzakasik.upol.where2study.restclients.jaxbmodels.mistnostiinforesponse.GetMistnostiInfoResponse.MistnostiInfo.MistnostInfo;
-import cz.honzakasik.upol.where2study.restclients.jaxbmodels.rozvrhbymistnostresponse.GetRozvrhByMistnostResponse;
-import cz.honzakasik.upol.where2study.restclients.jaxbmodels.rozvrhbymistnostresponse.RozvrhovaAkce;
+import cz.honzakasik.upol.where2study.datamanage.jaxbmodels.mistnostiinforesponse.GetMistnostiInfoResponse;
+import cz.honzakasik.upol.where2study.datamanage.jaxbmodels.mistnostiinforesponse.GetMistnostiInfoResponse.MistnostiInfo.MistnostInfo;
+import cz.honzakasik.upol.where2study.datamanage.jaxbmodels.rozvrhbymistnostresponse.GetRozvrhByMistnostResponse;
+import cz.honzakasik.upol.where2study.datamanage.jaxbmodels.rozvrhbymistnostresponse.RozvrhovaAkce;
 import cz.honzakasik.upol.where2study.room.Building;
 import cz.honzakasik.upol.where2study.room.BuildingManager;
 import cz.honzakasik.upol.where2study.room.Department;
@@ -57,9 +56,8 @@ public class DataDownloaderImpl implements DataDownloader {
 	@Inject
 	private BuildingManager buildingManager;
 	
-	private InputStream getResponse(String url) throws IOException {
+	private InputStream getResponse(String url, Client client) throws IOException {
 		log.debug("Starting client build");
-		Client client = ClientBuilder.newClient();
 		WebTarget webTarget = client.target(Constants.BASE_URL_REST_SERVICE + url);
 		Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
 		Response response = invocationBuilder.get();
@@ -80,28 +78,30 @@ public class DataDownloaderImpl implements DataDownloader {
 	
 	@Override
 	public void downloadData() throws IOException, JAXBException, IllegalStateException {
-		log.error("Starting download!");
+		log.info("Starting download!");
+		final Client client = ClientBuilder.newClient();
 		List<GetMistnostiInfoResponse.MistnostiInfo.MistnostInfo> mistnostInfos = parseMistnostInfoList(
-				getResponse("/mistnost/getMistnostiInfo"));
+				getResponse("/mistnost/getMistnostiInfo", client));
+	    final JAXBContext roomScheduleJaxbContext = JAXBContext.newInstance(GetRozvrhByMistnostResponse.class);
 		for (GetMistnostiInfoResponse.MistnostiInfo.MistnostInfo mi : mistnostInfos) {
-			final Building building = obtainBuildingForRoom(mi);
-			Room room = new Room.Builder()
-						.roomNumber(mi.getCisloMistnosti())
-						.type(mi.getTypCiselne().intValue())
-						.capacity(mi.getKapacita().intValue())
-						.doorNumber(mi.getDvereCislo())
-						.floor(mi.getPodlazi())
-						.building(building)
-						.inCommonFund(mi.getSpolecnyFond().equals("ne") ? false : true)
-						.department(parseDepartmentInfo(mi))
-						.schedule(obtainScheduleForRoom(mi))
-						.note(mi.getPoznamka())
-						.build();
-			building.addRoom(room);
-			log.info("Parsed room: '{}'", room.toString());
-			//persist the room
-			roomManager.createRoom(room);
-		}
+				final Building building = obtainBuildingForRoom(mi);
+				Room room = null;
+					room = new Room.Builder()
+								.roomNumber(mi.getCisloMistnosti())
+								.type(mi.getTypCiselne().intValue())
+								.capacity(mi.getKapacita().intValue())
+								.doorNumber(mi.getDvereCislo())
+								.floor(mi.getPodlazi())
+								.building(building)
+								.inCommonFund(mi.getSpolecnyFond().equals("ne") ? false : true)
+								.department(parseDepartmentInfo(mi))
+								.schedule(obtainScheduleForRoom(mi, client, roomScheduleJaxbContext))
+								.note(mi.getPoznamka())
+								.build();
+				log.debug("Parsed room: '{}'", room.toString());
+				//persist the room
+				roomManager.createRoom(room);
+			}
 	}
 			
 	private Building obtainBuildingForRoom(MistnostInfo mi) {
@@ -111,37 +111,36 @@ public class DataDownloaderImpl implements DataDownloader {
 			buildingManager.createBuilding(building);
 			return building;
 		} else {
-			log.info("Building {} already persisted!", mi.getZkrBudovy());
+			log.debug("Building {} already persisted!", mi.getZkrBudovy());
 			return persistedBuilding;
 		}
 	}
 
-	private List<RozvrhovaAkce> parseRozvrhovaAkceList(InputStream inputStream) throws JAXBException, IOException {
-	    final JAXBContext jaxbContext = JAXBContext.newInstance(GetRozvrhByMistnostResponse.class);
+	private List<RozvrhovaAkce> parseRozvrhovaAkceList(InputStream inputStream, JAXBContext jaxbContext) throws JAXBException, IOException {
 	    final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 	    return ((GetRozvrhByMistnostResponse) jaxbUnmarshaller.unmarshal(inputStream)).getRozvrh().getRozvrhovaAkce();
 	}
 
-	private Schedule obtainScheduleForRoom(GetMistnostiInfoResponse.MistnostiInfo.MistnostInfo mi)
+	private Schedule obtainScheduleForRoom(GetMistnostiInfoResponse.MistnostiInfo.MistnostInfo mi, Client client,
+			JAXBContext roomScheduleJaxbContext)
 			throws IOException, JAXBException, IllegalStateException {
 		final String buildingId = mi.getZkrBudovy();
 		final String roomNumber = mi.getCisloMistnosti();
-		log.info("Obtaining schedule for room: '{}-{}'", buildingId, roomNumber);
+		log.debug("Obtaining schedule for room: '{}-{}'", buildingId, roomNumber);
 		final String requestUrl = "/rozvrhy/getRozvrhByMistnost?budova=" + buildingId + "&mistnost=" + roomNumber;
-		final List<RozvrhovaAkce> rozvrhoveAkce = parseRozvrhovaAkceList(getResponse(requestUrl));
+		final List<RozvrhovaAkce> rozvrhoveAkce = parseRozvrhovaAkceList(getResponse(requestUrl, client), roomScheduleJaxbContext);
 		if (rozvrhoveAkce == null) {
 			throw new IllegalStateException("No data about events scheduled for room were parsed!");
 		}
-		log.info("Parsed {} events", rozvrhoveAkce.size());
-		final List<Event> events = new LinkedList<>();
+		log.debug("Parsed {} events", rozvrhoveAkce.size());
+		final Schedule schedule = new Schedule();
 		for (RozvrhovaAkce ra : rozvrhoveAkce) {
 			final Event event = new Event(TimeUtils.timeStringToLocalTime(ra.getHodinaSkutOd()),
 					TimeUtils.timeStringToLocalTime(ra.getHodinaSkutDo()),
 					TimeUtils.czechStringToDayOfWeek(ra.getDen()));
 			eventManager.createEvent(event);
-			events.add(event);
+			schedule.addEvent(event);
 		}
-		final Schedule schedule = new Schedule(events);
 		scheduleManager.createSchedule(schedule);
 		return schedule;
 	}
@@ -156,7 +155,7 @@ public class DataDownloaderImpl implements DataDownloader {
 			departmentManager.createDepartment(department);
 			return department;
 		} else {
-			log.info("Department '{}' already persisted!", persistedDepartment.getAbbreviation());
+			log.debug("Department '{}' already persisted!", persistedDepartment.getAbbreviation());
 			return persistedDepartment;
 		}
 	}

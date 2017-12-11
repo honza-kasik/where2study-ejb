@@ -1,7 +1,11 @@
 package cz.honzakasik.upol.where2study;
 
 import java.time.LocalTime;
+import java.util.Calendar;
 
+/**
+ * Util class for handling time related tasks
+ */
 public class TimeUtils {
 	
 	/**
@@ -38,6 +42,14 @@ public class TimeUtils {
 			default:
 				return -1;
 		}
+	}
+	
+	/**
+	 * Get current day of week as integer
+	 * @return day of week as integer
+	 */
+	public static int getDayOfWeekToday() {
+		return Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
 	}
 
 }

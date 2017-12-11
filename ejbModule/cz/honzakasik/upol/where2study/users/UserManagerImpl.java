@@ -17,7 +17,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public User findUser(String email, String passwordHash) throws Exception {
-		List<User> results = em.createQuery("select u from User u"
+		List<User> results = em.createQuery("select u from User u "
 				+ "where u.email=:email and u.passwordHash=:passwordHash", User.class)
 				.setParameter("email", email)
 				.setParameter("passwordHash", passwordHash)
@@ -44,6 +44,22 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public void saveUser(User user) {
 		em.merge(user);
+	}
+
+	@Override
+	public void createUser(User user) {
+		em.persist(user);
+	}
+
+	@Override
+	public User findUser(int id) {
+		final User user = em.find(User.class, id);
+		//Nasty hack to overcome "LazyInitializationException - no Session" https://developer.jboss.org/message/362374#362374
+		user.getPrefferedBuildings().size();
+		user.getPrefferedDepartments().size();
+		user.getPrefferedRooms().size();
+		//--end_of_hack--
+		return user;
 	}
 
 }
